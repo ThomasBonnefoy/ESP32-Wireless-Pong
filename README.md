@@ -2,7 +2,7 @@
 
 ## Contexte du projet
 
-Ce projet a été réalisé dans le cadre d’une **SAE** (*Situation d’Apprentissage et d’Évaluation*, **2.03 – Services réseaux et objets communicants*) du **BUT Informatique**, à l’IUT Lyon 1 – site de Bourg-en-Bresse.
+Ce projet a été réalisé dans le cadre d’une **SAE** (*Situation d’Apprentissage et d’Évaluation*, **2.03 – Services réseaux et objets communicants**) du **BUT Informatique**, à l’IUT Lyon 1 – site de Bourg-en-Bresse.
 
 La SAÉ est le dispositif pédagogique qui structure les projets du BUT : l’IUT confie aux étudiants un projet conséquent, réalisé en équipe, qui reproduit les conditions d’un travail réel : cahier des charges, gestion de projet, travail collaboratif et livrable évalué. Ces situations d’apprentissage constituent l’un des principaux vecteurs d’évaluation de la formation, en **contrôle continu**.
 
