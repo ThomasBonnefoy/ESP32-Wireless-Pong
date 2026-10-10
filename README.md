@@ -1,124 +1,120 @@
-# ESP32 Pong — SAE 2.03
+# ESP32 Wireless Pong
 
-Jeu de Pong sur écran OLED avec un ESP32, jouable en solo contre une IA ou en multijoueur local via **ESP-NOW** (deux cartes ESP32 communicant sans routeur Wi-Fi).
+## Contexte du projet
 
-**Vidéo de démonstration (EN)** : [https://youtu.be/keIEQiKue9o?si=39X66mhDlDRYl4x2](https://youtu.be/keIEQiKue9o?si=39X66mhDlDRYl4x2)
+Ce projet a été réalisé dans le cadre d’une **SAE** (*Situation d’Apprentissage et d’Évaluation*, **2.03 – Services réseaux et objets communicants*) du **BUT Informatique**, à l’IUT Lyon 1 – site de Bourg-en-Bresse.
 
-**Vidéo technique** : disponible sur [Moodle](https://moodle.univ-lyon1.fr/mod/assign/view.php?id=475172)
+La SAÉ est le dispositif pédagogique qui structure les projets du BUT : l’IUT confie aux étudiants un projet conséquent, réalisé en équipe, qui reproduit les conditions d’un travail réel : cahier des charges, gestion de projet, travail collaboratif et livrable évalué. Ces situations d’apprentissage constituent l’un des principaux vecteurs d’évaluation de la formation, en **contrôle continu**.
 
----
+La SAE 2.03 s’inscrit dans une démarche de conception de services réseaux à travers la création d'un objet communicant matériel. Le projet impose l'utilisation de microcontrôleurs (ESP32-C2), de modules électroniques d'acquisition (analogiques/numériques) et la mise en œuvre d'une communication sans fil directe.
 
-## Fonctionnalités
-
-- **Mode Solo** : raquette adverse contrôlée automatiquement (IA), 3 vies, score en temps réel, bip sonore à chaque rebond.
-- **Mode Multijoueur** : deux ESP32 reliés en ESP-NOW. Le maître gère la physique et envoie l'état à l'esclave. 3 vies chacun.
-- **Menu principal** navigable au joystick (MULTI / SOLO / PARAMÈTRES).
-- **Pause** disponible en mode Solo.
-- **Retour au menu** depuis n'importe quel écran via le bouton C.
+Le projet s’inscrit dans un **cadre pédagogique**, avec un objectif de production concrète associant développement logiciel embarqué et architecture réseau.
 
 ---
 
-## Matériel nécessaire
+## Présentation du projet
 
-| Composant | Qté (Solo) | Qté (Multi) |
-|---|---|---|
-| ESP32-C2 (ou compatible Feather) | 1 | 2 |
-| Écran OLED SH1107 128×64 I²C | 1 | 2 |
-| **Grove Shield FeatherWing** (Adafruit #4309) | 1 | 2 |
-| **Grove Joystick** (Seeed) | 1 | 2 |
-| **Grove Speaker** (Seeed) | 1 | 2 |
-| Câbles Grove 4 broches | 2 | 4 |
+Dans ce contexte, nous avons développé **ESP32 Wireless Pong**, une **application interactive de jeu de Pong en réseau local sans fil** reliant deux cartes électroniques de manière autonome (sans routeur Wi-Fi).
 
----
-
-## Câblage
-
-L'ESP32 s'enfiche sur le **Grove Shield FeatherWing**. Les modules Grove se branchent ensuite sur le shield via câbles Grove — aucune soudure nécessaire. L'écran OLED se branche directement sur l'ESP32 (I²C).
-
-| Module | Port du Grove Shield |
-|---|---|
-| Grove Joystick | Port analogique **A2/A3** |
-| Grove Speaker | Port digital **A0** |
-
-Le **bouton C** (retour menu) est un bouton intégré à l'écran OLED.
+L’objectif de l’application est de proposer une expérience de jeu d'arcade synchrone et fluide en s'appuyant sur :
+*   Une architecture asymétrique Maître / Esclave synchronisée en temps réel.
+*   Le protocole bas niveau **ESP-NOW** pour une communication ultra-rapide.
+*   Une interface graphique adaptative sur écran OLED embarqué.
+*   Des contrôles physiques complets et des retours sonores immersifs.
 
 ---
 
-## Librairies à installer
+## Objectifs pédagogiques
 
-Dans l'IDE Arduino (Gestionnaire de bibliothèques) :
-
-| Librairie | Remarque |
-|---|---|
-| `Adafruit GFX Library` | ≥ 1.11 |
-| `Adafruit SH110X` | ≥ 2.1 |
-| `WiFi` | Incluse dans le core ESP32 |
-| `esp_now` | Incluse dans le core ESP32 |
-
-**Core Arduino ESP32** : installer via le Gestionnaire de cartes avec l'URL :
-`https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json` (version ≥ 2.0)
+*   Programmer un microcontrôleur en langage C/C++ (Core Arduino/ESP32).
+*   Mettre en œuvre un protocole de liaison de données sans fil (ESP-NOW).
+*   Manipuler des bus de communication (I²C) et des entrées/sorties physiques (ADC, PWM, GPIO).
+*   Appliquer les concepts de la programmation orientée objet (POO) à un système contraint.
+*   Utiliser Git en environnement professionnel pour la maintenance et la gestion des régressions logicielles.
 
 ---
 
-## Compilation & flash
+## Fonctionnement de l’application
 
-1. Ouvrir `master.ino` dans l'IDE Arduino.
-2. Vérifier que tous les fichiers (`balle.h`, `balle.cpp`, `barre.h`, `barre.cpp`, `menu.h`, `menu.cpp`) sont dans le **même dossier** que `master.ino`.
-3. Sélectionner la carte : **ESP32C2 Dev Module**.
-4. Flasher via USB.
+L’application **ESP32 Pong** s’articule autour de plusieurs modes et composants techniques :
 
-### Mode Multijoueur — configuration de l'adresse MAC esclave
+### Mode Solo (vs Bot)
+*   Affrontement contre une raquette adverse gérée automatiquement (Intelligence Artificielle de suivi de balle).
+*   Gestion d'un système à 3 vies, affichage du score en temps réel et sauvegarde d'un état de Pause.
 
-Dans `master.ino`, remplacer l'adresse MAC par celle de l'ESP32 esclave :
+### Mode Multijoueur sans fil
+*   Connexion directe via **ESP-NOW**. Le Maître cadence la physique de la balle, intègre la position reçue de l'Esclave, et diffuse l'état complet du monde. 
+*   L'Esclave intercepte le paquet et rafraîchit son écran OLED local en transmettant en retour l'état de son joystick.
 
-```cpp
-uint8_t adresseEsclave[] = {0xC4, 0x4F, 0x33, 0x64, 0x8D, 0x11};
+### Interface & Feedback physique
+*   Menu principal navigable de façon fluide à l'aide du joystick (MULTI / SOLO / PARAMÈTRES).
+*   Génération d'un signal audio (bip de fréquence) via buzzer piézoélectrique à chaque rebond.
+*   Bouton d'interruption matérielle (Bouton C de l'OLED) pour un retour instantané au menu.
+
+---
+
+## Architecture et logique du programme
+
+Le projet applique les principes de la programmation orientée objet (POO) pour séparer strictement la logique métier de la gestion matérielle :
+*   `Balle` : Prise en charge des vecteurs physiques de déplacement, accélération progressive et calcul des rebonds complexes.
+*   `Barre` : Encapsulation des coordonnées, de la vitesse et des algorithmes de déplacement (Humain ou IA).
+*   `Menu` : Machine à états gérant l'arborescence visuelle des écrans graphiques.
+
+Pour éviter la duplication inutile de code (principe DRY), les classes métiers sont isolées dans un dossier partagé commun aux deux nœuds.
+
+---
+
+## Organisation du travail
+
+Projet réalisé en groupe dans le cadre de la SAE. Le suivi des tâches a été managé de façon agile à l'aide d'un diagramme de Gantt.
+
+### Membres du groupe
+*   [Yann Madry](https://github.com/yann-madry)
+*   [Thomas Bonnefoy](https://github.com/ThomasBonnefoy)
+
+Ma contribution personnelle s’est concentrée principalement sur :
+* **La physique et logique du jeu (100% de réalisation) :** Conception intégrale des classes orientées objet `Balle` et `Barre`, du moteur de collisions, et de l'implémentation du cycle des scores et des vies.
+* **L'Intelligence Artificielle (90% de réalisation) :** Modélisation et codage de l'algorithme autonome de suivi de balle pour le mode Solo (Bot).
+* **L'Interface Utilisateur (66% de réalisation) :** Intégration de la bibliothèque Adafruit, rendu de l'ergonomie visuelle à l'écran et programmation de la logique de navigation des menus.
+* **Maintien et gestion Git :** Structuration de l'arborescence partagée pour l'intégration des fonctionnalités et le suivi de version des modules de l'application.
+
+Cette répartition m’a permis de travailler de manière approfondie sur des aspects centrés sur **l'architecture logicielle C++, la robustesse algorithmique et la modularité du code**.
+
+---
+
+## Documents
+
+Les documents associés au projet sont disponibles à la racine du dépôt ou dans le dossier `docs/` :
+*   `SAE_203_Sujet.pdf` : Cahier des charges et consignes officielles.
+*   `Diagramme_gantt.xlsx` : Suivi de planification prévisionnel et réel de l'équipe.
+*   `Fonctionnalites_SAE203.xlsx` : Bilan de l'état d'avancement et de la répartition chiffrée des fonctionnalités.
+
+---
+
+## Implémentation
+
+L’implémentation de l’application a été réalisée en **C/C++** (Core Arduino ESP32 version ≥ 2.0).
+Le code est segmenté proprement pour être directement compilé sous Arduino IDE ou PlatformIO :
+
+```text
+├── src/
+│   ├── common/          # Modules C++ partagés (Classes métiers)
+│   │   ├── balle.cpp / .h
+│   │   ├── barre.cpp / .h
+│   │   └── menu.cpp / .h
+│   ├── master/          # Logique d'orchestration Maître
+│   │   └── master.ino
+│   └── slave/           # Logique du terminal Esclave
+│       └── slave.ino
 ```
-
-Pour connaître l'adresse MAC de l'esclave, ouvrir le Moniteur Série après le démarrage — elle s'affiche automatiquement au boot.
-
-Flasher ensuite le sketch **esclave** sur le second ESP32.
-
 ---
 
-## Utilisation
+## Suite du projet
 
-### Démarrage
+Plusieurs axes d'amélioration ont été identifiés pour parfaire l'application :
 
-Brancher l'ESP32 via USB ou alimentation externe. L'écran OLED affiche le **menu principal**.
+* **Optimisation de la fluidité (Mode Multijoueur) :** En mode réseau, le terminal esclave subit des baisses de fluidité visuelle (effet de saccades) liées au rafraîchissement synchrone des paquets. Par manque de temps en fin de projet, ce problème de synchronisation n'a pas pu être résolu.
+* **Complexification du gameplay :** Les trajectoires et les angles de rebond de la balle sont actuellement très linéaires et prévisibles. Le jeu mériterait l'ajout d'effets physiques (comme la variation de l'angle de rebond en fonction de la vitesse et du déplacement de la raquette lors de l'impact).
+* **Persistance des scores :** Sauvegarde du meilleur score dans la mémoire non-volatile de l'ESP32 afin de conserver les données d'une session à l'autre après extinction des cartes.
 
-### Navigation dans les menus
-
-| Action | Geste |
-|---|---|
-| Déplacer le curseur | Incliner le joystick ↑ / ↓ |
-| Valider | Appuyer sur le bouton joystick (clic) |
-| Retour au menu | Bouton C (GPIO 14) |
-
-### Mode Solo
-
-La raquette se déplace avec le joystick. 3 vies affichées à gauche, score en haut à droite. Maintenir le bouton joystick enfoncé ≥ 1 seconde pour mettre en **pause**.
-
-### Mode Multijoueur
-
-1. Sélectionner **MULTI** sur les deux ESP32.
-2. Une fois la connexion ESP-NOW établie, "CONNEXION REUSSIE !" s'affiche et la partie démarre.
-3. Le joueur maître lance la balle en appuyant sur le bouton joystick.
-4. Chaque joueur contrôle sa raquette avec son propre joystick.
-
----
-
-## Structure du code
-
-```
-├── master/
-│   ├── master.ino
-│   ├── balle.h / balle.cpp
-│   ├── barre.h / barre.cpp
-│   └── menu.h  / menu.cpp
-└── slave/
-    ├── slave.ino
-    ├── balle.h / balle.cpp
-    ├── barre.h / barre.cpp
-    └── menu.h  / menu.cpp
-```
+Ces éléments constituent des pistes d’évolution et non des limitations bloquantes.
